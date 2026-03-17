@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 64" width="400" height="64">
+  <defs>
+    <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6C5CE7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a29bfe;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Graduation cap icon -->
+  <g transform="translate(8, 8)">
+    <!-- Cap top (diamond shape) -->
+    <polygon points="24,6 46,18 24,30 2,18" fill="url(#heroGrad)" />
+    <!-- Cap button/tassel point -->
+    <circle cx="24" cy="18" r="2.5" fill="#ffffff" />
+    <!-- Cap base/band -->
+    <path d="M10,20 L10,32 Q24,42 38,32 L38,20 L24,28 Z" fill="#6C5CE7" opacity="0.85" />
+    <!-- Tassel string -->
+    <line x1="42" y1="18" x2="46" y2="30" stroke="#6C5CE7" stroke-width="1.8" stroke-linecap="round" />
+    <!-- Tassel end -->
+    <circle cx="46" cy="31" r="2" fill="#6C5CE7" />
+    <!-- Book beneath cap -->
+    <path d="M8,36 L24,40 L40,36 L40,42 L24,46 L8,42 Z" fill="#6C5CE7" opacity="0.5" />
+  </g>
+  <!-- Brand text: Hero AI -->
+  <text x="68" y="30" font-family="'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="700" fill="#6C5CE7" letter-spacing="1">
+    Hero AI
+  </text>
+  <!-- Subtext: 智慧课堂 -->
+  <text x="68" y="52" font-family="'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif" font-size="16" font-weight="500" fill="#8B80F0" letter-spacing="2">
+    智慧课堂
+  </text>
+  <!-- Decorative dot separator -->
+  <circle cx="196" cy="36" r="2.5" fill="#a29bfe" opacity="0.6" />
+</svg>

@@ -33,6 +33,7 @@ import { storePdfBlob } from '@/lib/utils/image-storage';
 import type { UserRequirements } from '@/lib/types/generation';
 import { useSettingsStore } from '@/lib/store/settings';
 import { useUserProfileStore, AVATAR_OPTIONS } from '@/lib/store/user-profile';
+import { HeroUserBar } from '@/components/hero-user-bar';
 import {
   StageListItem,
   listStages,
@@ -329,6 +330,10 @@ function HomePage() {
         ref={toolbarRef}
         className="fixed top-4 right-4 z-50 flex items-center gap-1 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md px-2 py-1.5 rounded-full border border-gray-100/50 dark:border-gray-700/50 shadow-sm"
       >
+        {/* Hero User Bar */}
+        <HeroUserBar locale={locale} />
+        <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
+
         {/* Language Selector */}
         <div className="relative">
           <button
@@ -494,8 +499,8 @@ function HomePage() {
       >
         {/* ── Logo ── */}
         <motion.img
-          src="/logo-horizontal.png"
-          alt="OpenMAIC"
+          src="/hero-classroom-logo.svg"
+          alt="Hero AI 智慧课堂"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{
@@ -686,7 +691,7 @@ function HomePage() {
 
       {/* Footer — flows with content, at the very end */}
       <div className="mt-auto pt-12 pb-4 text-center text-xs text-muted-foreground/40">
-        OpenMAIC Open Source Project
+        Powered by Hero AI — herowith.com
       </div>
     </div>
   );

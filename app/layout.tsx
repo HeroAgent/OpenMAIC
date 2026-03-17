@@ -17,9 +17,9 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'OpenMAIC',
+  title: 'Hero AI 智慧课堂',
   description:
-    'The open-source AI interactive classroom. Upload a PDF to instantly generate an immersive, multi-agent learning experience.',
+    'Hero AI 智慧课堂 — 上传PDF，一键生成AI互动课程，包含幻灯片、测验和模拟互动。',
 };
 
 export default function RootLayout({
