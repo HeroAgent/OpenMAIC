@@ -692,6 +692,8 @@ function HomePage() {
       {/* Footer — flows with content, at the very end */}
       <div className="mt-auto pt-12 pb-4 text-center text-xs text-muted-foreground/40">
         Powered by Hero AI — herowith.com
+        <span className="mx-2">·</span>
+        <a href="https://github.com/HeroAgent/OpenMAIC" target="_blank" rel="noopener noreferrer" className="underline hover:text-muted-foreground/60">源码 / Source</a>
       </div>
     </div>
   );
