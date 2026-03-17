@@ -350,6 +350,7 @@ export function useChatSessions(options: UseChatSessionsOptions = {}) {
           [key: string]: unknown;
         };
         userProfile?: { nickname?: string; bio?: string };
+        teachingMode?: string;
         apiKey: string;
         baseUrl?: string;
         model?: string;
@@ -768,6 +769,7 @@ export function useChatSessions(options: UseChatSessionsOptions = {}) {
               nickname: userProfileState.nickname || undefined,
               bio: userProfileState.bio || undefined,
             },
+            teachingMode: useSettingsStore.getState().teachingMode || 'teach',
             apiKey: mc.apiKey,
             baseUrl: mc.baseUrl,
             model: mc.modelString,
@@ -1003,6 +1005,7 @@ export function useChatSessions(options: UseChatSessionsOptions = {}) {
               nickname: userProfileState.nickname || undefined,
               bio: userProfileState.bio || undefined,
             },
+            teachingMode: settingsState.teachingMode || 'teach',
             apiKey: mc.apiKey,
             baseUrl: mc.baseUrl,
             model: mc.modelString,
@@ -1159,6 +1162,7 @@ export function useChatSessions(options: UseChatSessionsOptions = {}) {
               nickname: userProfileState.nickname || undefined,
               bio: userProfileState.bio || undefined,
             },
+            teachingMode: settingsState.teachingMode || 'teach',
             apiKey: mc.apiKey,
             baseUrl: mc.baseUrl,
             model: mc.modelString,

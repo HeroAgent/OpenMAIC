@@ -275,6 +275,8 @@ export interface StatelessChatRequest {
     nickname?: string;
     bio?: string;
   };
+  /** Teaching mode for education-specific AI behavior */
+  teachingMode?: string;
   /** OpenAI-compatible API credentials */
   apiKey: string;
   baseUrl?: string;

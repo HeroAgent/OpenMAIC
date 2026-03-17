@@ -9,7 +9,38 @@ import { cn } from '@/lib/utils';
 import { useI18n } from '@/lib/hooks/use-i18n';
 import { useStageStore } from '@/lib/store';
 import { PanelRightClose, BookOpen, MessageSquare } from 'lucide-react';
+import { useSettingsStore } from '@/lib/store/settings';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
+const TEACHING_MODES = [
+  { key: 'teach', icon: '📚', label: '教授' },
+  { key: 'advisor', icon: '🗺️', label: '顾问' },
+  { key: 'resource', icon: '📖', label: '资料' },
+  { key: 'quiz', icon: '✏️', label: '出题' },
+] as const;
+
+function TeachingModeSwitcher() {
+  const teachingMode = useSettingsStore((s) => s.teachingMode) || 'teach';
+  const setTeachingMode = useSettingsStore((s) => s.setTeachingMode);
+  return (
+    <div className="flex items-center gap-1.5 px-3 pb-1.5 flex-wrap">
+      {TEACHING_MODES.map((m) => (
+        <button
+          key={m.key}
+          onClick={() => setTeachingMode(m.key)}
+          className={cn(
+            'px-2.5 py-1 rounded-full text-[11px] border transition-all',
+            teachingMode === m.key
+              ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-semibold'
+              : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-300',
+          )}
+        >
+          {m.icon} {m.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 import { useChatSessions } from './use-chat-sessions';
 import { SessionList } from './session-list';
 import { LectureNotesView } from './lecture-notes-view';
@@ -273,6 +304,9 @@ export const ChatArea = forwardRef<ChatAreaRef, ChatAreaProps>(
                 </button>
               )}
             </div>
+
+            {/* Teaching Mode Switcher */}
+            <TeachingModeSwitcher />
 
             {/* Notes Tab */}
             <TabsContent value="lecture" className="flex-1 overflow-hidden flex flex-col">

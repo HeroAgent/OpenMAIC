@@ -97,6 +97,7 @@ export function buildStructuredPrompt(
   whiteboardLedger?: WhiteboardActionRecord[],
   userProfile?: { nickname?: string; bio?: string },
   agentResponses?: AgentTurnSummary[],
+  teachingMode?: string,
 ): string {
   // Determine current scene type for action filtering
   const currentScene = storeState.currentSceneId
@@ -169,6 +170,18 @@ Personalize your teaching based on their background when relevant. Address them 
     ? `\n# Language (CRITICAL)\nYou MUST speak in ${courseLanguage === 'zh-CN' ? 'Chinese (Simplified)' : courseLanguage === 'en-US' ? 'English' : courseLanguage}. ALL text content in your response MUST be in this language.\n`
     : '';
 
+  // Build teaching mode section
+  const teachingModePrompts: Record<string, string> = {
+    teach: '你现在处于教授模式。请详细讲解知识点，使用通俗易懂的语言，配合示例说明。如果涉及复杂概念，请分步骤拆解。',
+    advisor: '你现在处于学习顾问模式。请根据学生的学习目标和当前水平，制定个性化学习路径。包括：推荐学习顺序、预计时间、关键里程碑。',
+    resource: '你现在处于资料推荐模式。请推荐相关的学习资源，包括教材、论文、在线课程、视频等。按推荐优先级排序，并说明每个资源的适用水平和特点。',
+    quiz: '你现在处于练习出题模式。基于当前话题出练习题。规则：\n1. 每次出1-3道题\n2. 包含选择题和简答题\n3. 自适应难度：如果学生上一题答对了，下一题提升难度；答错了，降低难度并解释知识点\n4. 每道题后给出详细解析\n5. 追踪学生的掌握程度，给出学习建议',
+  };
+  const effectiveTeachingMode = teachingMode || 'teach';
+  const teachingModeSection = teachingModePrompts[effectiveTeachingMode]
+    ? `\n# Teaching Mode\n${teachingModePrompts[effectiveTeachingMode]}\n`
+    : '';
+
   return `# Role
 You are ${agentConfig.name}.
 
@@ -177,7 +190,7 @@ ${agentConfig.persona}
 
 ## Your Classroom Role
 ${roleGuideline}
-${studentProfileSection}${peerContext}${languageConstraint}
+${studentProfileSection}${peerContext}${languageConstraint}${teachingModeSection}
 # Output Format
 You MUST output a JSON array for ALL responses. Each element is an object with a \`type\` field:
 
