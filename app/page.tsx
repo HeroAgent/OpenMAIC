@@ -500,7 +500,7 @@ function HomePage() {
         {/* ── Logo ── */}
         <motion.img
           src="/hero-classroom-logo.svg"
-          alt="Hero AI 智慧课堂"
+          alt="Hero AI Smart Classroom"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{

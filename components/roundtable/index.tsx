@@ -604,8 +604,30 @@ export function Roundtable({
                   animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, scale: 0.95, y: 15, filter: 'blur(4px)' }}
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute inset-x-6 bottom-4 z-20 flex items-center justify-end"
+                  className="absolute inset-x-6 bottom-4 z-20 flex flex-col items-end gap-2"
                 >
+                  {/* Teaching Mode Switcher */}
+                  <div className="flex gap-1.5 flex-wrap justify-end">
+                    {[
+                      { key: 'teach', icon: '📚', label: '教授' },
+                      { key: 'advisor', icon: '🗺️', label: '顾问' },
+                      { key: 'resource', icon: '📖', label: '资料' },
+                      { key: 'quiz', icon: '✏️', label: '出题' },
+                    ].map((m) => (
+                      <button
+                        key={m.key}
+                        onClick={(e) => { e.stopPropagation(); setTeachingMode(m.key); }}
+                        className={cn(
+                          'px-2.5 py-1 rounded-full text-xs transition-all duration-200 border whitespace-nowrap',
+                          teachingMode === m.key
+                            ? 'border-purple-400 dark:border-purple-500 bg-purple-50 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-semibold shadow-sm'
+                            : 'border-gray-200 dark:border-gray-600 bg-white/80 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 hover:border-purple-300 dark:hover:border-purple-600 hover:bg-purple-50/50 dark:hover:bg-purple-900/20',
+                        )}
+                      >
+                        {m.icon} {m.label}
+                      </button>
+                    ))}
+                  </div>
                   <div className="relative w-fit max-w-[85%] sm:max-w-[65%] min-w-[200px] sm:min-w-[300px] bg-white/90 dark:bg-gray-800/90 backdrop-blur-md p-2 pr-2 rounded-2xl rounded-br-none shadow-2xl border border-purple-200 dark:border-purple-700 flex items-end gap-2 ring-1 ring-purple-100/50 dark:ring-purple-800/50">
                     <div className="pl-4 flex-1 py-1 min-w-0">
                       <textarea

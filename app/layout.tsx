@@ -17,9 +17,9 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Hero AI 智慧课堂',
+  title: 'Hero AI Smart Classroom',
   description:
-    'Hero AI 智慧课堂 — 上传PDF，一键生成AI互动课程，包含幻灯片、测验和模拟互动。',
+    'Hero AI Smart Classroom — Upload PDF to generate interactive AI courses with slides, quizzes, and simulations.',
 };
 
 export default function RootLayout({
