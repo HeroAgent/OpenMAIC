@@ -78,7 +78,7 @@ export function GenerationToolbar({
     ? Object.entries(providersConfig)
         .filter(
           ([, config]) =>
-            (!config.requiresApiKey || (config.apiKey && config.apiKey.trim().length > 0) || config.isServerConfigured) &&
+            (!config.requiresApiKey || (config.apiKey && config.apiKey.trim().length > 10) || config.isServerConfigured) &&
             config.models.length >= 1 &&
             (config.baseUrl || config.defaultBaseUrl || config.serverBaseUrl),
         )
@@ -185,7 +185,7 @@ export function GenerationToolbar({
                 {Object.values(PDF_PROVIDERS).map((provider) => {
                   const cfg = pdfProvidersConfig[provider.id];
                   const available =
-                    !provider.requiresApiKey || (cfg?.apiKey && cfg.apiKey.trim().length > 0) || !!cfg?.isServerConfigured;
+                    !provider.requiresApiKey || (cfg?.apiKey && cfg.apiKey.trim().length > 10) || !!cfg?.isServerConfigured;
                   return (
                     <SelectItem key={provider.id} value={provider.id} disabled={!available}>
                       <div className={cn('flex items-center gap-1.5', !available && 'opacity-50')}>
@@ -325,7 +325,7 @@ export function GenerationToolbar({
                   {Object.values(WEB_SEARCH_PROVIDERS).map((provider) => {
                     const cfg = webSearchProvidersConfig[provider.id];
                     const available =
-                      !provider.requiresApiKey || (cfg?.apiKey && cfg.apiKey.trim().length > 0) || !!cfg?.isServerConfigured;
+                      !provider.requiresApiKey || (cfg?.apiKey && cfg.apiKey.trim().length > 10) || !!cfg?.isServerConfigured;
                     return (
                       <SelectItem key={provider.id} value={provider.id} disabled={!available}>
                         <div
