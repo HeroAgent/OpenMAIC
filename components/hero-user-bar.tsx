@@ -28,6 +28,7 @@ interface HeroUser {
 
 export function HeroUserBar({ locale = 'zh-CN' }: { locale?: string }) {
   const [user, setUser] = useState<HeroUser | null>(null);
+  const [quota, setQuota] = useState<{ remaining: number; limit: number; used: number } | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -54,6 +55,15 @@ export function HeroUserBar({ locale = 'zh-CN' }: { locale?: string }) {
       .then((data) => {
         if (data.ok && data.email) {
           setUser({ email: data.email, userId: data.userId });
+          // After setting user, also fetch quota
+          fetch('/api/hero/quota', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+            .then((r) => r.ok ? r.json() : null)
+            .then((data) => {
+              if (data && data.quota) setQuota(data.quota);
+            })
+            .catch(() => {});
         }
       })
       .catch(() => {})
@@ -99,6 +109,24 @@ export function HeroUserBar({ locale = 'zh-CN' }: { locale?: string }) {
           <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
             <div className="text-xs text-gray-400 dark:text-gray-500">{isZh ? '已登录' : 'Signed in as'}</div>
             <div className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate mt-0.5">{user.email}</div>
+            {quota && (
+              <div className="mt-1.5">
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-xs text-gray-400 dark:text-gray-500">
+                    {isZh ? '配额' : 'Quota'}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {quota.limit - quota.remaining}/{quota.limit}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+                  <div
+                    className="bg-blue-500 dark:bg-blue-400 h-1 rounded-full transition-all"
+                    style={{ width: `${Math.min(100, ((quota.limit - quota.remaining) / quota.limit) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Back to console */}
