@@ -234,6 +234,8 @@ export function getServerProviders(): Record<string, { models?: string[]; baseUr
 
 /** Resolve API key: client key > server key > empty string */
 export function resolveApiKey(providerId: string, clientKey?: string): string {
+  // Bedrock uses IAM authentication, no API key required
+  if (providerId === 'bedrock') return '';
   if (clientKey) return clientKey;
   return getConfig().providers[providerId]?.apiKey || '';
 }

@@ -15,7 +15,8 @@ export type BuiltInProviderId =
   | 'minimax'
   | 'glm'
   | 'siliconflow'
-  | 'doubao';
+  | 'doubao'
+  | 'bedrock';
 
 /**
  * Provider ID (built-in or custom)
@@ -26,7 +27,7 @@ export type ProviderId = BuiltInProviderId | `custom-${string}`;
 /**
  * Provider API types
  */
-export type ProviderType = 'openai' | 'anthropic' | 'google';
+export type ProviderType = 'openai' | 'anthropic' | 'google' | 'bedrock';
 
 /**
  * Describes a model's thinking/reasoning API control capability.

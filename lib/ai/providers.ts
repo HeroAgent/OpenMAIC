@@ -26,6 +26,7 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createAmazonBedrock } from '@ai-sdk/amazon-bedrock';
 import type { LanguageModel } from 'ai';
 import type {
   ProviderId,
@@ -837,6 +838,64 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
       },
     ],
   },
+
+  bedrock: {
+    id: 'bedrock',
+    name: 'Amazon Bedrock',
+    type: 'bedrock',
+    requiresApiKey: false,
+    icon: '/logos/bedrock.svg',
+    models: [
+      {
+        id: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
+        name: 'Claude Haiku 4.5',
+        contextWindow: 200000,
+        outputWindow: 64000,
+        capabilities: {
+          streaming: true,
+          tools: true,
+          vision: true,
+          thinking: {
+            toggleable: true,
+            budgetAdjustable: true,
+            defaultEnabled: false,
+          },
+        },
+      },
+      {
+        id: 'us.anthropic.claude-sonnet-4-6',
+        name: 'Claude Sonnet 4.6',
+        contextWindow: 200000,
+        outputWindow: 128000,
+        capabilities: {
+          streaming: true,
+          tools: true,
+          vision: true,
+          thinking: {
+            toggleable: true,
+            budgetAdjustable: true,
+            defaultEnabled: false,
+          },
+        },
+      },
+      {
+        id: 'us.anthropic.claude-opus-4-6-v1',
+        name: 'Claude Opus 4.6',
+        contextWindow: 200000,
+        outputWindow: 128000,
+        capabilities: {
+          streaming: true,
+          tools: true,
+          vision: true,
+          thinking: {
+            toggleable: true,
+            budgetAdjustable: true,
+            defaultEnabled: false,
+          },
+        },
+      },
+    ],
+  },
 };
 
 /**
@@ -1022,6 +1081,28 @@ export function getModel(config: ModelConfig): ModelWithInfo {
       }
       const google = createGoogleGenerativeAI(googleOptions);
       model = google.chat(config.modelId);
+      break;
+    }
+
+    case 'bedrock': {
+      const bedrockOptions: Parameters<typeof createAmazonBedrock>[0] = {
+        region: process.env.AWS_REGION || 'us-east-1',
+      };
+      // If explicit keys provided, use them; otherwise use dynamic provider chain (server-side only)
+      if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
+        bedrockOptions.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+        bedrockOptions.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+        if (process.env.AWS_SESSION_TOKEN) {
+          bedrockOptions.sessionToken = process.env.AWS_SESSION_TOKEN;
+        }
+      } else if (typeof window === 'undefined') {
+        // Server-side only: use EC2 IAM role via dynamic import to avoid client-side bundling
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { fromNodeProviderChain } = require('@aws-sdk/credential-providers');
+        bedrockOptions.credentialProvider = fromNodeProviderChain();
+      }
+      const bedrock = createAmazonBedrock(bedrockOptions);
+      model = bedrock.languageModel(config.modelId as Parameters<typeof bedrock.languageModel>[0]);
       break;
     }
 
