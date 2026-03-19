@@ -177,8 +177,23 @@ const DEFAULT_FILENAME = 'server-providers.yml';
 const _configs: Map<string, ServerConfig> = new Map();
 
 function buildConfig(yamlData: YamlData): ServerConfig {
+  const providers = loadEnvSection(LLM_ENV_MAP, yamlData.providers);
+
+  // Auto-register Bedrock if AWS_REGION is configured (uses IAM role, no API key needed)
+  if (process.env.AWS_REGION) {
+    providers['bedrock'] = {
+      apiKey: 'iam-role', // placeholder, not actually used
+      models: [
+        'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+        'us.anthropic.claude-haiku-4-5-20251001-v1:0',
+        'us.anthropic.claude-sonnet-4-6',
+        'us.anthropic.claude-opus-4-6-v1',
+      ],
+    };
+  }
+
   return {
-    providers: loadEnvSection(LLM_ENV_MAP, yamlData.providers),
+    providers,
     tts: loadEnvSection(TTS_ENV_MAP, yamlData.tts),
     asr: loadEnvSection(ASR_ENV_MAP, yamlData.asr),
     pdf: loadEnvSection(PDF_ENV_MAP, yamlData.pdf),
@@ -234,8 +249,8 @@ export function getServerProviders(): Record<string, { models?: string[]; baseUr
 
 /** Resolve API key: client key > server key > empty string */
 export function resolveApiKey(providerId: string, clientKey?: string): string {
-  // Bedrock uses IAM authentication, no API key required
-  if (providerId === 'bedrock') return '';
+  // Bedrock uses IAM authentication, no API key required — return placeholder so frontend treats it as configured
+  if (providerId === 'bedrock') return 'iam-role';
   if (clientKey) return clientKey;
   return getConfig().providers[providerId]?.apiKey || '';
 }
