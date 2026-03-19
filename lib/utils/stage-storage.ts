@@ -9,6 +9,25 @@ import { Stage, Scene } from '../types/stage';
 import { ChatSession } from '../types/chat';
 import { db } from './database';
 import { saveChatSessions, loadChatSessions, deleteChatSessions } from './chat-storage';
+// Cloud sync (lazy import to avoid circular deps)
+let _saveToCloud: ((stageId: string) => Promise<void>) | null = null;
+let _deleteFromCloud: ((stageId: string) => Promise<void>) | null = null;
+async function getSaveToCloud() {
+  if (!_saveToCloud) {
+    const m = await import('@/lib/hooks/use-cloud-sync');
+    _saveToCloud = m.saveToCloud;
+    _deleteFromCloud = m.deleteFromCloud;
+  }
+  return _saveToCloud;
+}
+async function getDeleteFromCloud() {
+  if (!_deleteFromCloud) {
+    const m = await import('@/lib/hooks/use-cloud-sync');
+    _saveToCloud = m.saveToCloud;
+    _deleteFromCloud = m.deleteFromCloud;
+  }
+  return _deleteFromCloud;
+}
 import { clearPlaybackState } from './playback-storage';
 import { createLogger } from '@/lib/logger';
 
@@ -71,6 +90,9 @@ export async function saveStageData(stageId: string, data: StageStoreData): Prom
     }
 
     log.info(`Saved stage: ${stageId}`);
+
+    // Background cloud sync (fire-and-forget, non-blocking)
+    getSaveToCloud().then(fn => fn(stageId)).catch(() => {});
   } catch (error) {
     log.error('Failed to save stage:', error);
     throw error;
@@ -125,6 +147,9 @@ export async function deleteStageData(stageId: string): Promise<void> {
     await clearPlaybackState(stageId);
 
     log.info(`Deleted stage: ${stageId}`);
+
+    // Background cloud delete (fire-and-forget, non-blocking)
+    getDeleteFromCloud().then(fn => fn(stageId)).catch(() => {});
   } catch (error) {
     log.error('Failed to delete stage:', error);
     throw error;

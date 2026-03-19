@@ -40,6 +40,7 @@ import {
   deleteStageData,
   getFirstSlideByStages,
 } from '@/lib/utils/stage-storage';
+import { loadFromCloud } from '@/lib/hooks/use-cloud-sync';
 import { ThumbnailSlide } from '@/components/slide-renderer/components/ThumbnailSlide';
 import type { Slide } from '@/lib/types/slides';
 import { useMediaGenerationStore } from '@/lib/store/media-generation';
@@ -163,6 +164,21 @@ function HomePage() {
     }
   };
 
+  const syncFromCloudAndRefresh = async () => {
+    try {
+      await loadFromCloud();
+      // Refresh local list after cloud sync (silent, non-blocking)
+      const list = await listStages();
+      setClassrooms(list);
+      if (list.length > 0) {
+        const slides = await getFirstSlideByStages(list.map((c) => c.id));
+        setThumbnails(slides);
+      }
+    } catch (err) {
+      log.warn('Cloud sync failed (non-blocking):', err);
+    }
+  };
+
   useEffect(() => {
     // Clear stale media store to prevent cross-course thumbnail contamination.
     // The store may hold tasks from a previously visited classroom whose elementIds
@@ -171,7 +187,11 @@ function HomePage() {
     useMediaGenerationStore.setState({ tasks: {} });
 
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Store hydration on mount
-    loadClassrooms();
+    loadClassrooms().then(() => {
+      // Background cloud sync (after local data is shown)
+      syncFromCloudAndRefresh();
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- syncFromCloudAndRefresh is stable
   }, []);
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
