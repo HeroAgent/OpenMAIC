@@ -102,14 +102,16 @@ export async function generateClassroom(
   const { model: languageModel, modelInfo, modelString } = resolveModel({});
   log.info(`Using server-configured model: ${modelString}`);
 
-  // Fail fast if the resolved provider has no API key configured
+  // Fail fast if the resolved provider has no API key configured (skip for Bedrock which uses IAM)
   const { providerId } = parseModelString(modelString);
-  const apiKey = resolveApiKey(providerId);
-  if (!apiKey) {
-    throw new Error(
-      `No API key configured for provider "${providerId}". ` +
-        `Set the appropriate key in .env.local or server-providers.yml (e.g. ${providerId.toUpperCase()}_API_KEY).`,
-    );
+  if (providerId !== 'bedrock') {
+    const apiKey = resolveApiKey(providerId);
+    if (!apiKey) {
+      throw new Error(
+        `No API key configured for provider "${providerId}". ` +
+          `Set the appropriate key in .env.local or server-providers.yml (e.g. ${providerId.toUpperCase()}_API_KEY).`,
+      );
+    }
   }
 
   const aiCall: AICallFn = async (systemPrompt, userPrompt, _images) => {

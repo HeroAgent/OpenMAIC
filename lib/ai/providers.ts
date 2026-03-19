@@ -847,6 +847,13 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
     icon: '/logos/bedrock.svg',
     models: [
       {
+        id: 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+        name: 'Claude Haiku',
+        contextWindow: 200000,
+        outputWindow: 4096,
+        capabilities: { streaming: true, tools: true, vision: true },
+      },
+      {
         id: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
         name: 'Claude Haiku 4.5',
         contextWindow: 200000,

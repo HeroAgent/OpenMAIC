@@ -67,7 +67,8 @@ export async function POST(req: NextRequest) {
     const effectiveBaseUrl = resolveBaseUrl(providerId, body.baseUrl);
     const proxy = resolveProxy(providerId);
 
-    if (!effectiveApiKey) {
+    // Skip API key check for Bedrock which uses IAM authentication
+    if (!effectiveApiKey && providerId !== 'bedrock') {
       return apiError('MISSING_API_KEY', 401, 'API Key is required');
     }
 
