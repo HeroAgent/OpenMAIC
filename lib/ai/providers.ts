@@ -844,6 +844,7 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
     name: 'Amazon Bedrock',
     type: 'bedrock',
     requiresApiKey: false,
+    defaultBaseUrl: 'https://bedrock-runtime.us-east-1.amazonaws.com',
     icon: '/logos/bedrock.svg',
     models: [
       {
